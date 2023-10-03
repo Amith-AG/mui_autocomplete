@@ -1,6 +1,6 @@
-import React, { useState, ChangeEvent } from 'react';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
+import React, { useState, ChangeEvent } from "react";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 
 interface AutoCompleteOption {
   _id: string;
@@ -8,9 +8,13 @@ interface AutoCompleteOption {
   description: string;
 }
 
-const HsnComp: React.FC = () => {
+interface IHSNCompProps {
+  onSelectHSN: (description: string, hsnCode: string) => void;
+}
+
+const AutoCompleteComponent: React.FC<IHSNCompProps> = ({ onSelectHSN }) => {
   const [options, setOptions] = useState<AutoCompleteOption[]>([]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
 
   const fetchOptions = async (input: string) => {
     try {
@@ -20,10 +24,10 @@ const HsnComp: React.FC = () => {
       if (Array.isArray(result)) {
         setOptions(result);
       } else {
-        console.error('API response is not an array:', result);
+        console.error("API response is not an array:", result);
       }
     } catch (error) {
-      console.error('Error fetching options:', error);
+      console.error("Error fetching options:", error);
     }
   };
 
@@ -36,7 +40,7 @@ const HsnComp: React.FC = () => {
   return (
     <Autocomplete
       options={options}
-      getOptionLabel={(option) => `${option.description} ${option.htsno}`}
+      getOptionLabel={(option) => `${option.description} (${option.htsno})`}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -47,26 +51,31 @@ const HsnComp: React.FC = () => {
           value={inputValue}
           InputLabelProps={{
             shrink: false,
-            style: { transform: 'translate(14px, 12px) scale(1)' }, // Adjust the translate values as needed
+            style: { transform: "translate(14px, 12px) scale(1)" },
           }}
           sx={{
-            '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              boxShadow: '0 0 0 2px black',
-              borderColor: 'transparent',
+            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              {
+                boxShadow: "0 0 0 2px black",
+                borderColor: "transparent",
+              },
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "8px",
+              borderColor: "lightgray",
             },
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '8px',
-              borderColor: 'lightgray',
-            },
-            // Custom styling to reduce the height
-            '& .MuiInputBase-input': {
-              padding: '8px', // Adjust as needed
-              fontSize: '14px', 
-               height:'10px'// Adjust as needed
+            "& .MuiInputBase-input": {
+              padding: "8px",
+              fontSize: "14px",
+              height: "10px",
             },
           }}
         />
       )}
+      onChange={(_, selectedOption) => {
+        if (selectedOption) {
+          onSelectHSN(selectedOption.description, selectedOption.htsno);
+        }
+      }}
       renderOption={(props, option) => (
         <li {...props}>
           <p>
@@ -78,4 +87,4 @@ const HsnComp: React.FC = () => {
   );
 };
 
-export default HsnComp;
+export default AutoCompleteComponent;

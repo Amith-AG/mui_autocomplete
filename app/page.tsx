@@ -54,7 +54,13 @@ export default function Home() {
             <CardTitle>HS CODE</CardTitle>
           </CardHeader>
           <CardContent>
-            <HsnComp/>
+             <HsnComp
+                onSelectHSN={(description, hsnCode) => {
+                  console.log("Selected HSN:", description, hsnCode);
+                  setValue("hsn.description", description);
+                  setValue("hsn.hsCode", hsnCode);
+                }}
+              />
           </CardContent>
         </Card>
 
